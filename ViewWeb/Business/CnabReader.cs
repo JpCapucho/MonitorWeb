@@ -10,6 +10,12 @@ namespace ViewWeb.Business
 {
     public class CnabReader
     {
+        /// <summary>
+        /// Ler o Arquivo de CNAB400 e retorna uma lista de titulos genericos e um bool
+        /// </summary>
+        /// <param name="arquivo"></param>
+        /// <param name="CodigoBanco"></param>
+        /// <returns><see cref="List{TituloGenerico}, bool"/></returns>
         public (List<TituloGenerico>, bool) LerArquivoCnab400(Stream arquivo, int CodigoBanco)
         {
             var Titulos = new List<TituloGenerico>();

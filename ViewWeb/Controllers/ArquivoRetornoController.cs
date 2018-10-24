@@ -19,7 +19,9 @@ namespace ViewWeb.Controllers
         [HttpPost]
         public ActionResult ArquivoCnab(FormCollection formCollection)
         {
+            //lista para armazenar os titulos que do Cronn
             var boletos = new List<Cronn.Core.Tendencia.Model.Cobranca>();
+            //lista para armazenar os titulos genericos
             var boletosGenericos = new List<Models.TituloGenerico>();
             var nomeArquivo = "";
 
@@ -57,6 +59,7 @@ namespace ViewWeb.Controllers
                 }
             }
 
+            //Pega a quantidade de boletos Pre e Pos pagos
             var PreOrPos = boletos
                 .GroupBy(x => x.TipoCobranca)
                 .Select(x => new Models.PreOrPos
@@ -65,6 +68,7 @@ namespace ViewWeb.Controllers
                     Quantidade = x.Count()
                 });
 
+            //Pega a quantidade de ocorrencias por tipo
             var QtdaOcorrencias = boletosGenericos
                 .GroupBy(x => x.TipoOcorrencia)
                 .Select(x => new Models.TipoOcorrencia
@@ -82,6 +86,10 @@ namespace ViewWeb.Controllers
             return RedirectToAction("Resumo");
         }
 
+        /// <summary>
+        /// Pegas as informaçoes da Action ArquivoCnab para enviar o resultado da leitura para a View Resumo
+        /// </summary>
+        /// <returns><see cref="Resumo"/></returns>
         public ActionResult Resumo()
         {
             if (TempData["Boletos"] != null && TempData["BoletosGenerico"] != null)
