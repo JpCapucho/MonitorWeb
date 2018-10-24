@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Leitura dos Arquivos de Retorno</h2>
+<div class="jumbotron">
+
+    @using (Html.BeginForm("ArquivoCnab", "ArquivoRetorno", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <fildset>
+            <b>Escolha um Banco</b>
+            <select id="banco" , name="banco" required>
+                <option selected="selected" value="237">Bradesco</option>
+                <option value="1">Banco do Brasil</option>
+                <option value="341">Banco Itaú</option>
+            </select>
+        </fildset>
+        <input type="file" name="UploadedFile" required />
+        <input type="submit" id="btnSubmit" name="Submit" value="Enviar" />
+    }
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<div id="divLoader" style="display:none">
+    <img src="~/Content/ajax-loader.gif" alt="Loader" />
+</div>
+<script>
+    $("#btnSubmit").click(function () {
+        $("#divLoader").show();
+        $.ajax
+            ({
+                url: href,
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                data: {},
+            })
+    });
+</script> 

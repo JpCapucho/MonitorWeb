@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Resumo";
+}
+<div class="jumbotron">
+    <h2>Resumo</h2>
+    <p>Arquivo: @ViewBag.nomeArquivo</p>
+
+    @foreach (var item in ViewBag.PreOrPos)
+    {
+        <p>@item.Chave - Quantidade: @item.Quantidade</p>
+    }
+
+    @foreach (var item in ViewBag.QtdaOcorrencias)
+    {
+        <p>Ocorrencia do Tipo - @item.Chave tem: <b>@item.Quantidade</b></p>
+    }
+
+</div>
+
+<div class="arrow">
+    <div class="row col-md-5">
+        <h4>Títulos no CNAB</h4>
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th align="center">NossoNumero</th>
+                    <th align="center">Valor do Título</th>
+                    <th align="center">Tipo Ocorrencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.BoletosGenerico)
+                {
+                    <tr>
+                        <td align="center">@item.NossoNumero</td>
+                        <td align="center">@item.ValorTitulo</td>
+                        <td align="center">@item.TipoOcorrencia</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-5">
+        <h4>Títulos no Cronn-SGV</h4>
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th align="center">NossoNumero</th>
+                    <th align="center">Valor do Título</th>
+                    <th align="center">Cliente SGV</th>
+                    <th align="center">Tipo de Cobrança</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Boletos)
+                {
+                <tr>
+                    <td align="center">@item.BoletoNossoNro</td>
+                    <td align="center">@item.BoletoValor</td>
+                    <td align="center">@item.Cliente</td>
+                    <td align="center">@item.TipoCobranca</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
