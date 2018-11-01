@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -39,21 +41,40 @@ namespace ViewWeb.Controllers
 
                     if (lista.Item2)
                     {
+                        WindowsIdentity identity = WindowsIdentity.GetCurrent();
                         if (banco == 1)
                         {
-                            foreach (var item in lista.Item1)
+                            Parallel.ForEach(lista.Item1, item =>
                             {
-                                var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero);
-                                boletos.Add(boleto);
-                            }
+                                using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+                                {
+                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero);
+                                    boletos.Add(boleto);
+                                }
+                            });
+
+                            //foreach (var item in lista.Item1)
+                            //{
+                            //    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero);
+                            //    boletos.Add(boleto);
+                            //}
                         }
                         else
                         {
-                            foreach (var item in lista.Item1)
+                            Parallel.ForEach(lista.Item1, item =>
                             {
-                                var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
-                                boletos.Add(boleto);
-                            }
+                                using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+                                {
+                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
+                                    boletos.Add(boleto);
+                                }
+                            });
+
+                            //foreach (var item in lista.Item1)
+                            //{
+                            //    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
+                            //    boletos.Add(boleto);
+                            //}
                         }
                     }
                 }
@@ -79,8 +100,8 @@ namespace ViewWeb.Controllers
 
             TempData["PreOrPos"] = PreOrPos;
             TempData["QtdaOcorrencias"] = QtdaOcorrencias;
-            TempData["Boletos"] = boletos;
-            TempData["BoletosGenerico"] = boletosGenericos;
+            TempData["Boletos"] = boletos.OrderBy(b => b.BoletoNossoNro);
+            TempData["BoletosGenerico"] = boletosGenericos.OrderBy(b => b.NossoNumero);
             TempData["nomeArquivo"] = nomeArquivo;
 
             return RedirectToAction("Resumo");
