@@ -21,6 +21,21 @@
     }
 </div>
 
+@*<div class="jumbotron">
+    @using (Html.BeginForm("BuscarNossoNumero", "ArquivoRetorno", FormMethod.Post))
+    {
+    <b>
+        Coloque o NossoNumero: @Html.TextBox("NossoNumero")
+        <input type="submit" value="Procurar" />
+        <br />
+        <br />
+        Quando não encontrar um título, insira o NossoNumero na caixa de pesquisa,
+        muitas vezes o SGV não entrega o título, clique em "Procurar" para realizar
+        a pesquisa nos servidores do SGV!
+    </b>
+    }
+</div>*@
+
 <script src="~/Scripts/jquery-3.3.1.js"></script>
 <div id="divLoader" style="display:none">
     <img src="~/Content/ajax-loader.gif" alt="Loader" />

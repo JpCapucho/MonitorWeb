@@ -18,6 +18,11 @@ namespace ViewWeb.Controllers
             return View();
         }
 
+        public ActionResult GridBoletos()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult ArquivoCnab(FormCollection formCollection)
         {
@@ -25,6 +30,7 @@ namespace ViewWeb.Controllers
             var boletos = new List<Cronn.Core.Tendencia.Model.Cobranca>();
             //lista para armazenar os titulos genericos
             var boletosGenericos = new List<Models.TituloGenerico>();
+            var cobrancas = new List<Models.TituloGenerico>();
             var nomeArquivo = "";
 
             if (Request != null)
@@ -38,17 +44,19 @@ namespace ViewWeb.Controllers
                     var lerArquivo = new Business.CnabReader();
                     var lista = lerArquivo.LerArquivoCnab400(file.InputStream, banco);
                     boletosGenericos = lista.Item1;
+                    var titulos = lista.Item1.Select(x => x.NossoNumero).ToList();
+                    var distinctTitulos = titulos.Distinct().ToList();
 
                     if (lista.Item2)
                     {
                         WindowsIdentity identity = WindowsIdentity.GetCurrent();
                         if (banco == 1)
                         {
-                            Parallel.ForEach(lista.Item1, item =>
+                            Parallel.ForEach(distinctTitulos, item =>
                             {
                                 using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
                                 {
-                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero);
+                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item);
                                     boletos.Add(boleto);
                                 }
                             });
@@ -61,11 +69,11 @@ namespace ViewWeb.Controllers
                         }
                         else
                         {
-                            Parallel.ForEach(lista.Item1, item =>
+                            Parallel.ForEach(distinctTitulos, item =>
                             {
                                 using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
                                 {
-                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
+                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.Substring(0, item.Length - 1));
                                     boletos.Add(boleto);
                                 }
                             });
@@ -77,11 +85,57 @@ namespace ViewWeb.Controllers
                             //}
                         }
                     }
+
+
+                    foreach (var item in boletosGenericos)
+                    {
+                        var cobranca = new Models.TituloGenerico();
+                        cobranca = item;
+
+                        if (banco == 1)
+                        {
+                            var cliente = boletos
+                                .Where(x => x != null && x.BoletoNossoNro == item.NossoNumero)
+                                //.Select(b => b.Cliente.Id)
+                                .Select(x => new { x.Cliente.Id, x.TipoCobranca})
+                                .ToList();
+
+                            foreach (var res in cliente)
+                            {
+                                cobranca.ClienteId = res.Id;
+                                cobranca.TipoCobranca = string.IsNullOrEmpty(res.TipoCobranca.ToString()) ? "PosPago"
+                                    : res.TipoCobranca == 0 ? "PosPago" : "PrePago";
+                            }
+
+                        }
+                        else
+                        {
+                            var cliente = boletos
+                                .Where(x => x != null &&  x.BoletoNossoNro == item.NossoNumero.Substring(0, item.NossoNumero.Length - 1))
+                                //.Select(b => b.Cliente.Id)
+                                .Select(x => new { x.Cliente.Id, x.TipoCobranca })
+                                .ToList();
+
+                            foreach (var res in cliente)
+                            {
+                                cobranca.ClienteId = res.Id;
+                                cobranca.TipoCobranca = string.IsNullOrEmpty(res.TipoCobranca.ToString()) ? "PosPago"
+                                    : res.TipoCobranca == 0 ? "PosPago" : "PrePago";
+                            }
+                        }
+
+                        cobrancas.Add(cobranca);
+                    }
                 }
             }
 
+
+
+
+
             //Pega a quantidade de boletos Pre e Pos pagos
             var PreOrPos = boletos
+                .Where(x => x != null)
                 .GroupBy(x => x.TipoCobranca)
                 .Select(x => new Models.PreOrPos
                 {
@@ -89,8 +143,10 @@ namespace ViewWeb.Controllers
                     Quantidade = x.Count()
                 });
 
+
             //Pega a quantidade de ocorrencias por tipo
             var QtdaOcorrencias = boletosGenericos
+                .Where(x => x.TipoOcorrencia != null)
                 .GroupBy(x => x.TipoOcorrencia)
                 .Select(x => new Models.TipoOcorrencia
                 {
@@ -100,9 +156,10 @@ namespace ViewWeb.Controllers
 
             TempData["PreOrPos"] = PreOrPos;
             TempData["QtdaOcorrencias"] = QtdaOcorrencias;
-            TempData["Boletos"] = boletos.OrderBy(b => b.BoletoNossoNro);
+            TempData["Boletos"] = boletos.Where(b => b != null).OrderBy(b => b.BoletoNossoNro);
             TempData["BoletosGenerico"] = boletosGenericos.OrderBy(b => b.NossoNumero);
             TempData["nomeArquivo"] = nomeArquivo;
+            TempData["Cobrancas"] = cobrancas.Where(x => x != null).OrderBy(x => x.NossoNumero);
 
             return RedirectToAction("Resumo");
         }
@@ -129,6 +186,9 @@ namespace ViewWeb.Controllers
 
                 var nomeArquivo = TempData["nomeArquivo"];
                 ViewBag.nomeArquivo = nomeArquivo;
+
+                var cobrancas = TempData["Cobrancas"];
+                ViewBag.Cobrancas = cobrancas;
             }
             return View();
         }

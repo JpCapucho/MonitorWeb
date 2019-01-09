@@ -19,50 +19,130 @@
 </div>
 
 <div class="arrow">
-    <div class="row col-md-5">
-        <h4>Títulos no CNAB</h4>
-        <table class="table-bordered">
-            <thead>
-                <tr>
-                    <th align="center">NossoNumero</th>
-                    <th align="center">Valor do Título</th>
-                    <th align="center">Tipo Ocorrencia</th>
-                </tr>
-            </thead>
+
+    <table id="data" class="stripe" style="width:100%">
+        <thead>
+            <tr>
+                <th align="center">NossoNumero</th>
+                <th align="center">Valor do Título</th>
+                <th align="center">Cliente SGV</th>
+                <th align="center">Tipo de Ocorrencia</th>
+                <th align="center">Tipo de Cobrança</th>
+            </tr>
+        </thead>
+
             <tbody>
-                @foreach (var item in ViewBag.BoletosGenerico)
+                @foreach (var item in ViewBag.Cobrancas)
                 {
                     <tr>
                         <td align="center">@item.NossoNumero</td>
                         <td align="center">@item.ValorTitulo</td>
+                        <td align="center">@item.ClienteId</td>
                         <td align="center">@item.TipoOcorrencia</td>
+                        <td align="center">@item.TipoCobranca</td>
                     </tr>
                 }
             </tbody>
-        </table>
-    </div>
-    <div class="col-md-5">
-        <h4>Títulos no Cronn-SGV</h4>
-        <table class="table-bordered">
-            <thead>
-                <tr>
-                    <th align="center">NossoNumero</th>
-                    <th align="center">Valor do Título</th>
-                    <th align="center">Cliente SGV</th>
-                    <th align="center">Tipo de Cobrança</th>
-                </tr>
-            </thead>
-            <tbody>
+            @*<tbody>
                 @foreach (var item in ViewBag.Boletos)
                 {
+                    <tr>
+                        <td align="center">@item.BoletoNossoNro</td>
+                        <td align="center">@item.BoletoValor</td>
+                        <td align="center">@item.Cliente</td>
+                        <td align="center"></td>
+                        <td align="center">@item.TipoCobranca</td>
+                    </tr>
+                }
+            </tbody>*@
+    </table>
+
+    @*<table id="datatable1" class="data">
+        <thead>
+            <tr>
+                <th align="center">NossoNumero</th>
+                <th align="center">Valor do Título</th>
+                <th align="center">Cliente SGV</th>
+                <th align="center">Tipo de Cobrança</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.Boletos)
+            {
                 <tr>
                     <td align="center">@item.BoletoNossoNro</td>
                     <td align="center">@item.BoletoValor</td>
                     <td align="center">@item.Cliente</td>
                     <td align="center">@item.TipoCobranca</td>
                 </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>*@
+
 </div>
+
+@*<div class="arrow">
+        <div class="row col-md-5">
+            <h4>Títulos no CNAB</h4>
+            <table class="table-bordered">
+                <thead>
+                    <tr>
+                        <th align="center">NossoNumero</th>
+                        <th align="center">Valor do Título</th>
+                        <th align="center">Tipo Ocorrencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.BoletosGenerico)
+                    {
+                        <tr>
+                            <td align="center">@item.NossoNumero</td>
+                            <td align="center">@item.ValorTitulo</td>
+                            <td align="center">@item.TipoOcorrencia</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5">
+            <h4>Títulos no Cronn-SGV</h4>
+            <table class="table-bordered">
+                <thead>
+                    <tr>
+                        <th align="center">NossoNumero</th>
+                        <th align="center">Valor do Título</th>
+                        <th align="center">Cliente SGV</th>
+                        <th align="center">Tipo de Cobrança</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.Boletos)
+                    {
+                    <tr>
+                        <td align="center">@item.BoletoNossoNro</td>
+                        <td align="center">@item.BoletoValor</td>
+                        <td align="center">@item.Cliente</td>
+                        <td align="center">@item.TipoCobranca</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>*@
+
+
+@section Scripts{
+
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#data').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+                }
+            });
+        });
+    </script>
+}

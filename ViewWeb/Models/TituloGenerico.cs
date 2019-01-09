@@ -33,6 +33,10 @@ namespace ViewWeb.Models
 
         public int? TipoOcorrencia { get; set; }
 
+        public string TipoCobranca { get; set; }
+
+        public long? ClienteId { get; set; }
+
         public string DescricaoOcorrencia { get; set; }
     }
 }
