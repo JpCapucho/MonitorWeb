@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ViewWeb.Business;
 
 namespace ViewWeb.Controllers
 {
@@ -18,9 +19,11 @@ namespace ViewWeb.Controllers
             return View();
         }
 
-        public ActionResult GridBoletos()
+        public ActionResult BuscarTitulo(string OurNumber)
         {
-            return View();
+            var search = new LocalizaTitulo();
+            var result = search.SearchTitulo(OurNumber);
+            return View(result);
         }
 
         [HttpPost]

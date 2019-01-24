@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "BuscarTitulo";
+}
+
+<h2>Buscar Titulo</h2>
+
+@using (Html.BeginForm("BuscarTitulo", "ArquivoRetorno", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label for="OurNumber">Insira o Nosso Numero</label>
+        <input id="OurNumber" name="OurNumber" type="text" placeholder="Insira o Nosso Numero" required />
+        <input type="submit" id="enviar" value="Pesquisar" />
+    </div>
+
+    <hr />
+
+    <div class="container">
+        <table class="table uk-table-condensed">
+            <thead>
+                <tr>
+                    <th scope="col">Sgv</th>
+                    <th scope="col">Rv</th>
+                    <th scope="col">Dci</th>
+                    <th scope="col">Ax-Int</th>
+                    <th scope="col">Ax Remissão</th>
+                    <th scope="col">Ax</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@if (Model.Sgv == false) { } else { <p>OK</p>}</td>
+                    <td>@if (Model.Rv == false) { } else { <p>OK</p>}</td>
+                    <td>@if (Model.Dci == false) { } else { <p>OK</p>}</td>
+                    <td>@if (Model.Int == false) { } else { <p>OK</p>}</td>
+                    <td>@if (Model.IntRes == false) { } else { <p>OK</p>}</td>
+                    <td>@if (Model.Ax == false) { } else { <p>OK</p>}</td>
+                </tr>
+                <tr>
+                    <td>@if (Model.PreOrPos == "PosPago") { } else {@Model.PreOrPos} </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

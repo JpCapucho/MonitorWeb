@@ -2,30 +2,106 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<script src="~/Scripts/Chart/highcharts.js"></script>
+<script src="~/Scripts/Chart/exporting.js"></script>
+
+@*style="min-width: 310px; height: 400px; max-width: 500px; margin: 0 auto"*@
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+    <div id="container" class="col-md-4"></div>
+    <div id="container1" class="col-md-4"></div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $.getJSON("/Home/BoletosDciJson", function (result) {
+            Highcharts.chart('container', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Quantidade de Boletos dos ultimos 5 dias'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
+                    //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Canal',
+                    colorByPoint: true,
+                    data: [{
+                        name: 'TENDENCIA',
+                        y: result.TENDENCIA
+                    }, {
+                        name: 'RV',
+                        y: result.RV
+                    }]
+                }]
+            });
+
+            Highcharts.chart('container1', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Valor da soma dos boletos dos ultimos 5 dias: ' + result.ValorTotal
+                },
+                //tooltip: {
+                //    pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
+                //    //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                //},
+                tooltip: {
+                    formatter: function () {
+
+                        return this.point.series.name + ': <b> R$' + Highcharts.numberFormat(this.point.y, 1, ',', '.') + '</b>';
+                    }
+                },
+
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Canal',
+                    colorByPoint: true,
+                    data: [{
+                        name: 'Valor Tendencia',
+                        y: result.ValorTENDENCIA
+                    }, {
+                        name: 'Valor RV',
+                        y: result.ValorRV
+                    }]
+                }]
+            });
+        });
+    });
+</script>

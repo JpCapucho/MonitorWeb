@@ -185,16 +185,33 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Business\CnabReader.cs" />
+    <Compile Include="Business\CobrancasCronnBuss.cs" />
+    <Compile Include="Business\CobrancasDCIBuss.cs" />
+    <Compile Include="Business\LocalizaTitulo.cs" />
     <Compile Include="Business\VerificaCodigoBanco.cs" />
     <Compile Include="Controllers\ArquivoRetornoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DAO\CobrancasAxBankCollectionDAO.cs" />
+    <Compile Include="DAO\CobrancasCronnDAO.cs" />
+    <Compile Include="DAO\CobrancasCronnRVDAO.cs" />
+    <Compile Include="DAO\CobrancasDciDAO.cs" />
+    <Compile Include="DAO\CobrancasIntDAO.cs" />
+    <Compile Include="DAO\CobrancasIntResDAO.cs" />
+    <Compile Include="DAO\ConexaoDAO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PreOrPos.cs" />
+    <Compile Include="Models\ResumTittle.cs" />
     <Compile Include="Models\TipoCobranca.cs" />
     <Compile Include="Models\TipoOcorrencia.cs" />
+    <Compile Include="Models\TituloAxBankCollection.cs" />
+    <Compile Include="Models\TituloCronnRV.cs" />
+    <Compile Include="Models\TituloDCI.cs" />
     <Compile Include="Models\TituloGenerico.cs" />
+    <Compile Include="Models\TituloInt.cs" />
+    <Compile Include="Models\TituloIntRes.cs" />
+    <Compile Include="Models\TituloResumo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +390,8 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Chart\exporting.js" />
+    <Content Include="Scripts\Chart\highcharts.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />
@@ -475,10 +494,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ArquivoRetorno\Index.cshtml" />
     <Content Include="Views\ArquivoRetorno\Resumo.cshtml" />
+    <Content Include="Views\ArquivoRetorno\BuscarTitulo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="DAO\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
