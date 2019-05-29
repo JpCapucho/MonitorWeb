@@ -31,19 +31,19 @@
             </tr>
         </thead>
 
-            <tbody>
-                @foreach (var item in ViewBag.Cobrancas)
-                {
-                    <tr>
-                        <td align="center">@item.NossoNumero</td>
-                        <td align="center">@item.ValorTitulo</td>
-                        <td align="center">@item.ClienteId</td>
-                        <td align="center">@item.TipoOcorrencia</td>
-                        <td align="center">@item.TipoCobranca</td>
-                    </tr>
-                }
-            </tbody>
-            @*<tbody>
+        <tbody>
+            @foreach (var item in ViewBag.Cobrancas)
+            {
+                <tr>
+                    <td align="center">@item.NossoNumero</td>
+                    <td align="center">@item.ValorTitulo</td>
+                    <td align="center">@item.ClienteId</td>
+                    <td align="center">@item.TipoOcorrencia</td>
+                    <td align="center">@item.TipoCobranca</td>
+                </tr>
+            }
+        </tbody>
+        @*<tbody>
                 @foreach (var item in ViewBag.Boletos)
                 {
                     <tr>
@@ -58,26 +58,26 @@
     </table>
 
     @*<table id="datatable1" class="data">
-        <thead>
-            <tr>
-                <th align="center">NossoNumero</th>
-                <th align="center">Valor do Título</th>
-                <th align="center">Cliente SGV</th>
-                <th align="center">Tipo de Cobrança</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in ViewBag.Boletos)
-            {
+            <thead>
                 <tr>
-                    <td align="center">@item.BoletoNossoNro</td>
-                    <td align="center">@item.BoletoValor</td>
-                    <td align="center">@item.Cliente</td>
-                    <td align="center">@item.TipoCobranca</td>
+                    <th align="center">NossoNumero</th>
+                    <th align="center">Valor do Título</th>
+                    <th align="center">Cliente SGV</th>
+                    <th align="center">Tipo de Cobrança</th>
                 </tr>
-            }
-        </tbody>
-    </table>*@
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Boletos)
+                {
+                    <tr>
+                        <td align="center">@item.BoletoNossoNro</td>
+                        <td align="center">@item.BoletoValor</td>
+                        <td align="center">@item.Cliente</td>
+                        <td align="center">@item.TipoCobranca</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
 
 </div>
 
@@ -135,11 +135,24 @@
 
     <script src="~/Scripts/jquery-3.3.1.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
+
     <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#data').DataTable({
-                "language": {
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel', 'pdf'
+                ]
+                , "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
                 }
             });

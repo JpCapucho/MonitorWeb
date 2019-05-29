@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using Dapper;
 using ViewWeb.Models;
+using Cronn.Core.Tendencia.Model;
 
 namespace ViewWeb.DAO
 {
@@ -45,5 +46,42 @@ namespace ViewWeb.DAO
                 return cobranca;
             }
         }
+
+        public Cobranca GetCobranca(string BoletoNossoNro)
+        {
+            var query = @"select *
+                        from Cronn_PRD.Sgv.Cobranca
+                        where BoletoNossoNro = @BoletoNossoNro";
+
+            using (var db = new SqlConnection(ConexaoDAO.GetConexao()))
+            {
+                var cobranca = db.Query<Cobranca>(query, new { @BoletoNossoNro }).FirstOrDefault();
+                return cobranca;
+            }
+        }
+
+        public List<Cobranca> GetCobrancas(List<string> Lista)
+        {
+            //var query = "select * from [Cronn_PRD].[Sgv].[Cobranca] where BoletoNossoNro in @NossoNumero";
+            var query = "select * from [Cronn_PRD].[Sgv].[Cobranca] b inner join [Cronn_PRD].[Sgv].[Cliente] c on (b.IdCliente = c.Id) where BoletoNossoNro in @NossoNumero";
+
+            using (var db = new SqlConnection(ConexaoDAO.GetConexao()))
+            {
+                var result = db.Query<Cobranca, Cliente, Cobranca>(query
+                    ,(Cobranca, Cliente) => { Cobranca.Cliente = Cliente;
+                        return Cobranca;
+                    }
+                    , new { NossoNumero = Lista });
+                return result.ToList();
+            }
+
+            //using (var db = new SqlConnection(ConexaoDAO.GetConexao()))
+            //{
+            //    var result = db.Query<Cobranca>(query
+            //                , new { NossoNumero = Lista });
+            //    return result.ToList();
+            //}
+        }
+
     }
 }

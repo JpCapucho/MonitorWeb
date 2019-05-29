@@ -21,9 +21,13 @@ namespace ViewWeb.Controllers
 
         public ActionResult BuscarTitulo(string OurNumber)
         {
-            var search = new LocalizaTitulo();
-            var result = search.SearchTitulo(OurNumber);
-            return View(result);
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+            {
+                var search = new LocalizaTitulo();
+                var result = search.SearchTitulo(OurNumber);
+                return View(result);
+            }
         }
 
         [HttpPost]
@@ -48,21 +52,33 @@ namespace ViewWeb.Controllers
                     var lista = lerArquivo.LerArquivoCnab400(file.InputStream, banco);
                     boletosGenericos = lista.Item1;
                     var titulos = lista.Item1.Select(x => x.NossoNumero).ToList();
-                    var distinctTitulos = titulos.Distinct().ToList();
+                    //var distinctTitulos = titulos.Distinct().ToList();
 
                     if (lista.Item2)
                     {
                         WindowsIdentity identity = WindowsIdentity.GetCurrent();
                         if (banco == 1)
                         {
-                            Parallel.ForEach(distinctTitulos, item =>
+                            var ListNossoNumeros = lista.Item1
+                                .Distinct()
+                                .Select(x => x.NossoNumero)
+                                .ToList();
+
+                            using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
                             {
-                                using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
-                                {
-                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item);
-                                    boletos.Add(boleto);
-                                }
-                            });
+                                var boletosBuss = new Business.CobrancasCronnBuss().GetCobrancas(ListNossoNumeros);
+                                boletos = boletosBuss;
+                            }
+
+
+                            //Parallel.ForEach(distinctTitulos, item =>
+                            //{
+                            //    using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+                            //    {
+                            //        var boleto = new CobrancaBusiness().GetByNossoNumero(item);
+                            //        boletos.Add(boleto);
+                            //    }
+                            //});
 
                             //foreach (var item in lista.Item1)
                             //{
@@ -72,18 +88,32 @@ namespace ViewWeb.Controllers
                         }
                         else
                         {
-                            Parallel.ForEach(distinctTitulos, item =>
+                            //Parallel.ForEach(distinctTitulos, item =>
+                            //{
+                            //    using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+                            //    {
+                            //        //var boleto = new CobrancaBusiness().GetByNossoNumero(item.Substring(0, item.Length - 1));
+                            //        var boleto = new DAO.CobrancasCronnDAO().GetCobranca(item.Substring(0, item.Length - 1));
+                            //        boletos.Add(boleto);
+                            //    }
+                            //});
+
+                            var ListNossoNumeros = lista.Item1
+                                .Distinct()
+                                .Select(x => x.NossoNumero.Substring(0, x.NossoNumero.Length - 1))
+                                .ToList();
+
+                            using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
                             {
-                                using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
-                                {
-                                    var boleto = new CobrancaBusiness().GetByNossoNumero(item.Substring(0, item.Length - 1));
-                                    boletos.Add(boleto);
-                                }
-                            });
+                                var boletosBuss = new Business.CobrancasCronnBuss().GetCobrancas(ListNossoNumeros);
+                                boletos = boletosBuss;
+                            }
+
 
                             //foreach (var item in lista.Item1)
                             //{
-                            //    var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
+                            //    var boleto = new DAO.CobrancasCronnDAO().GetCobranca(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
+                            //    //var boleto = new CobrancaBusiness().GetByNossoNumero(item.NossoNumero.Substring(0, item.NossoNumero.Length - 1));
                             //    boletos.Add(boleto);
                             //}
                         }
@@ -100,7 +130,7 @@ namespace ViewWeb.Controllers
                             var cliente = boletos
                                 .Where(x => x != null && x.BoletoNossoNro == item.NossoNumero)
                                 //.Select(b => b.Cliente.Id)
-                                .Select(x => new { x.Cliente.Id, x.TipoCobranca})
+                                .Select(x => new { x.Cliente.Id, x.TipoCobranca })
                                 .ToList();
 
                             foreach (var res in cliente)
@@ -114,7 +144,7 @@ namespace ViewWeb.Controllers
                         else
                         {
                             var cliente = boletos
-                                .Where(x => x != null &&  x.BoletoNossoNro == item.NossoNumero.Substring(0, item.NossoNumero.Length - 1))
+                                .Where(x => x != null && x.BoletoNossoNro == item.NossoNumero.Substring(0, item.NossoNumero.Length - 1))
                                 //.Select(b => b.Cliente.Id)
                                 .Select(x => new { x.Cliente.Id, x.TipoCobranca })
                                 .ToList();

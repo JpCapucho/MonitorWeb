@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using ViewWeb.Business;
@@ -10,7 +11,7 @@ namespace ViewWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private CobrancasDCIBuss db = new CobrancasDCIBuss();
+
 
         public ActionResult Index()
         {
@@ -19,22 +20,27 @@ namespace ViewWeb.Controllers
 
         public ActionResult BoletosDciJson()
         {
-            var result = db.GetTitulos();
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            using (WindowsImpersonationContext impersonationContext = identity.Impersonate())
+            {
+                CobrancasDCIBuss db = new CobrancasDCIBuss();
+                var result = db.GetTitulos();
 
-            int rv = result.Where(x => x.Canal == "RV").Count();
-            int tendencia = result.Where(x => x.Canal == "TENDENCIA").Count();
-            decimal valorTotal =Convert.ToDecimal(result.Sum(x => x.Valor));
-            decimal valorRv = Convert.ToDecimal(result.Where(x => x.Canal == "RV").Sum(x => x.Valor));
-            decimal valorTendencia = Convert.ToDecimal(result.Where(x => x.Canal == "TENDENCIA").Sum(x => x.Valor));
+                int rv = result.Where(x => x.Canal == "RV").Count();
+                int tendencia = result.Where(x => x.Canal == "TENDENCIA").Count();
+                decimal valorTotal = Convert.ToDecimal(result.Sum(x => x.Valor));
+                decimal valorRv = Convert.ToDecimal(result.Where(x => x.Canal == "RV").Sum(x => x.Valor));
+                decimal valorTendencia = Convert.ToDecimal(result.Where(x => x.Canal == "TENDENCIA").Sum(x => x.Valor));
 
-            var obj = new Tittle();
-            obj.RV = rv;
-            obj.TENDENCIA = tendencia;
-            obj.ValorTotal = valorTotal.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
-            obj.ValorRV = valorRv;
-            obj.ValorTENDENCIA = valorTendencia;
+                var obj = new Tittle();
+                obj.RV = rv;
+                obj.TENDENCIA = tendencia;
+                obj.ValorTotal = valorTotal.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
+                obj.ValorRV = valorRv;
+                obj.ValorTENDENCIA = valorTendencia;
 
-            return Json(obj, JsonRequestBehavior.AllowGet);
+                return Json(obj, JsonRequestBehavior.AllowGet);
+            }
         }
 
         private class Tittle

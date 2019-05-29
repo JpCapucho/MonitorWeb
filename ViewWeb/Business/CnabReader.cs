@@ -90,6 +90,8 @@ namespace ViewWeb.Business
                     //Itaú não tem o Código da Empresa, para validar está sendo usado a Conta
                 case 31588:
                     return true;
+                case 41388:
+                    return true;
 
                 default:
                     return false;
